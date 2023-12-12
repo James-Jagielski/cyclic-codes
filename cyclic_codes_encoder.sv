@@ -13,14 +13,21 @@ input wire clk, ena, rst, message;
 wire [N-1:0] q1, q2, q3, q4;
 output logic [N-1:0] out;
 
+input wire clk, ena, rst, set;
+input wire [N-1:0] XOR1, p2, data1, data2, data3, data4;
+output logic [N-1:0] q1, q2, q3, message_data1, message_data2, message_data3, message_data4,;
+
+
 
 
 // parity check
 
 always_comb begin:
-
 XOR1 = q3 ^ message_data4;
-
+p2 = q2;
+message_data1 = data2;
+message_data2 = data3;
+message_data3 = data4;
 end
 
 always_ff @(posedge clk) begin
@@ -33,7 +40,7 @@ always_ff @(posedge clk) begin
     if (ena) begin
       q1 <= XOR1;
       q2 <= X0R1^q1;
-      q3 <= q2;
+      q3 <= p2;
     end
   end
 end
@@ -46,13 +53,13 @@ always_ff @(posedge clk) begin
     data1 = 1'b1;
   end
   if (set2) begin
-    message_data2 = 1'b1;
+    data2 = 1'b1;
   end
   if (set3) begin
-    message_data3 = 1'b1;
+    data3 = 1'b1;
   end
   if (set4) begin
-    message_data4 = 1'b1;
+    data4 = 1'b1;
   end
   if (rst) begin
     message_data1 <= RESET_VALUE;
@@ -63,9 +70,9 @@ always_ff @(posedge clk) begin
   else begin
     if (ena) begin
       message_data1 <= data1; 
-      message_data2 <= message_data1; 
-      message_data3 <= message_data2;
-      message_data4 <= message_data3; 
+      message_data2 <= data2; 
+      message_data3 <= data3;
+      message_data4 <= data4; 
     end
   end
 end
